@@ -8,7 +8,7 @@ function vector_base = compute_distrib(alpha,grid_size)
     vector_base = zeros(grid_size^2,1);
     vector_base(1) = beta;
 
-    if mod(d_max,2)==1
+    if mod(grid_size,2)==1
         for i=1:d_max
 
             for j=((2*i-1)^2+1):(2*i+1)^2
