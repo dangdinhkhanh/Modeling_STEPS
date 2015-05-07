@@ -2,8 +2,8 @@
 % P = ones(n,1)/n;
 %res = MinMaxFunction(P);
 alpha = 1.6;
-%grid_size = 20;
-grid_size = 21;
+grid_size = 20;
+%grid_size = 21;
 %P = vector_base;
 P = compute_distrib(alpha,grid_size);
 k= 1:15;
