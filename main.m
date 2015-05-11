@@ -6,12 +6,14 @@ grid_size = 20;
 %grid_size = 21;
 %P = vector_base;
 P = compute_distrib(alpha,grid_size);
-k= 1:15;
+k= 1:20;
 ct = zeros(length(k),1);
 for i = 1:length(k)
     ct(i) = CoveringTime(P,i);
 end
+
+figure(1);
 hold on;
-plot(k,ct,'r-');
+plot(k,ct,'b-');
 %meeting time
 %mt = MeetingTime2RWs(P,P);

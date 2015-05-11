@@ -1,4 +1,4 @@
-function plot_results( walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody , walkers)
+function plot_results( walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody)
 
     mat_vision_time = cell2mat(walkers_time_to_have_complete_vision);
     mat_meeting_time = cell2mat(walkers_time_to_meet_everybody);
@@ -28,19 +28,9 @@ function plot_results( walkers_time_to_have_complete_vision, walkers_time_to_mee
     
 	theorical_cov_time = avgVisionTime(1) ./ x;
     
-    %min = avgVisionTime(1) ./ (x .* walkers.beta);
-    %max = avgVisionTime(1) .* (8 * walkers.d_max * (1 + walkers.d_max)) ./ (x .* walkers.beta);
-    
 	h(1) = figure(1);
 	hold all
     plot(x, avgVisionTime);
-% 	hold all
-% 	plot(x, theorical_cov_time);
-% 	hold all
-%     plot(x, min);
-% 	hold all
-%     plot(x, max);
-% 	hold all
 	grid on
     xlabel('number of walkers')
     ylabel('All nodes local vision time')

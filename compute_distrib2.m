@@ -71,8 +71,8 @@ else
     end
 end
 
-disp(stan_dist);
-disp(dist);
+% disp(stan_dist);
+% disp(dist);
 % disp(sum(sum(distrb)));
 % disp(beta);
 

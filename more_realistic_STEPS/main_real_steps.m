@@ -113,7 +113,7 @@ end
 
 %% Plots
 
-plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody, walkers);
+plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody);
 
 %% Save nodes attach position
 
