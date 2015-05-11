@@ -21,24 +21,28 @@ nb_vertices = grid_size * grid_size;
 %% Simulator parameters initialisation
 
 total_nb_simulations = 20;
-max_nb_walkers = 15;
+max_nb_walkers = 20;
 walkers_time_to_have_complete_vision = cell(max_nb_walkers, total_nb_simulations);
 walkers_time_to_meet_everybody = cell(max_nb_walkers, total_nb_simulations);
+
+% Attach zones storage
+all_attach_zones_k = cell(max_nb_walkers,1);
 
 for k=1:max_nb_walkers
     fprintf('**************** %d walker(s) ****************\n', k);
     
+    % Walkers creation
+    walkers = Group(alpha,k,grid_size,rwp_speed,rwp_pause_time,zone_speed,zone_time,zone_size,time_step,radio_range);
+	% The walkers' positions are chose uniformly for t = 0
+	walkers_positions = floor(walkers.coords ./ zone_size);
+    all_attach_zones_k{k,1} = walkers_positions;
 
     %% Simulation start
 
     for num_simu=1:total_nb_simulations
+        walkers.coords = all_attach_zones_k{k,1};
+        
         fprintf('Simu %d\n', num_simu);
-
-        % Walkers creation
-        walkers = Group(alpha,k,grid_size,rwp_speed,rwp_pause_time,zone_speed,zone_time,zone_size,time_step,radio_range);
-
-        % The walkers' positions are chose uniformly for t = 0
-        walkers_positions = floor(walkers.coords ./ zone_size);
 
         % A global coverage matrix representing the global vision
         % i.e. all vertices visited by at least one walker
@@ -110,3 +114,7 @@ end
 %% Plots
 
 plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody, walkers);
+
+%% Save nodes attach position
+
+save('all_attach_zones_k.mat', 'all_attach_zones_k');
