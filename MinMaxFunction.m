@@ -27,8 +27,9 @@ res = 0;
         fun = @(x) fun(x).*f(x);
     end
     fun = @(x) 1-fun(x);
-    %ct = integral(fun,0,Inf);
+    %ct = integral(@(x) fun(x),0,Inf);
     res = quadgk(@(x) fun(x),0,Inf);
+    %res = quadgk(@(x) fun(x),0,10^7);
 
 end
 
