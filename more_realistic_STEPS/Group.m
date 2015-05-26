@@ -64,9 +64,13 @@ classdef Group < handle
             self.coords = self.grid_coords*self.zone_size + self.zone_size * rand(self.number_of_nodes,2);
             self.next_waypoint = self.grid_coords*self.zone_size + self.zone_size * rand(self.number_of_nodes,2);
             self.speed = (self.v_rwp(2) - self.v_rwp(1)) * rand(self.number_of_nodes,1) + self.v_rwp(1);
+            % aauger
             self.pause_time = (self.t_rwp(2) - self.t_rwp(1)) * rand(self.number_of_nodes,1) + self.t_rwp(1);
+            %self.pause_time = zeros(self.number_of_nodes,1);
             self.pause_time(stationary_nodes) = NaN;
+            % aauger
             self.zone_time = (self.t_zone(2) - self.t_zone(1))*rand(self.number_of_nodes,1) + self.t_zone(1);
+            %self.zone_time = zeros(self.number_of_nodes,1);
             self.zone_time(stationary_nodes) = NaN;
             self.roaming = zeros(self.number_of_nodes,1);
             
@@ -107,7 +111,9 @@ classdef Group < handle
             if ~isequal(in_arrived,zeros(self.number_of_nodes,1))
                 new_wp = self.zone_size*rand(self.number_of_nodes,2);
                 self.next_waypoint(in_arrived,:) = self.grid_coords(in_arrived,:) * self.zone_size + new_wp(in_arrived,:);                
+                % aauger
                 new_pause = (self.t_rwp(2) - self.t_rwp(1)) * rand(self.number_of_nodes,2) + self.t_rwp(1);
+                %new_pause = zeros(self.number_of_nodes,2);
                 self.pause_time(in_arrived) = new_pause(in_arrived);              
                 new_speed = (self.v_rwp(2) - self.v_rwp(1)) * rand(self.number_of_nodes,1) + self.v_rwp(1);
                 self.speed(in_arrived) = new_speed(in_arrived);
@@ -126,9 +132,12 @@ classdef Group < handle
             % % taking a pause
             pausing = in_zone & self.pause_time ~= 0 & ~d_to_next_wp==0; % node o trong zone, dang pause nhung ko phai la nhung node vua moi den noi
             self.pause_time(pausing & self.pause_time <= self.time_step) = 0;
-            self.pause_time(pausing & self.pause_time > self.time_step) = self.pause_time(pausing & self.pause_time > self.time_step) - self.time_step;
-        
+            % aauger
+            %self.pause_time(pausing & self.pause_time > self.time_step) = self.pause_time(pausing & self.pause_time > self.time_step) - self.time_step;
+            self.pause_time(pausing & self.pause_time > self.time_step) = 0;
+            
             % update residual time of the stay
+            % aauger
             if ~isequal(in_zone & self.zone_time <= self.time_step,zeros(self.number_of_nodes,1))
                 self.zone_time(in_zone & self.zone_time <= self.time_step) = 0;
                 new_zone = self.power_law(self.attachment_zone,self.grid_size,self.number_of_nodes);
@@ -142,7 +151,7 @@ classdef Group < handle
            
             
             % nodes moving to a new zone
-            out_zone = self.zone_time == 0 & ~in_zone; % node het thoi gian o trong zone, nhung ko phai la nhung node vua moi het thoi gian duoc cap nhat o tren
+            out_zone = self.zone_time == 0 & ~in_zone; % node timeout for the nodes inside the zone but not for nodes which just enter in the zone
             if ~isequal(out_zone,zeros(self.number_of_nodes,1))
                 [direction d_to_next_zone] = self.shortest_distance_torus(self.coords, self.next_waypoint, out_zone);
            

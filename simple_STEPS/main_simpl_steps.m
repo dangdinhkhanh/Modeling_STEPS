@@ -14,8 +14,8 @@ attachment_zone = [floor(grid_size/2) floor(grid_size/2)];
 
 %% Simulator parameters initialisation
 
-total_nb_simulations = 20;
-max_nb_walkers = 15;
+total_nb_simulations = 30;
+max_nb_walkers = 20;
 walkers_time_to_have_complete_vision = cell(max_nb_walkers, total_nb_simulations);
 walkers_time_to_meet_everybody = cell(max_nb_walkers, total_nb_simulations);
 
@@ -55,7 +55,8 @@ for k=1:max_nb_walkers
 
         t = 0;
         % While the local vision is not complete for ALL walkers...
-        while (sum(sum(sum(walkers_coverage_matrix))) < nb_vertices * k) | (sum(sum(walkers_cumul_adj_matrix)) < k * k)
+        % | (sum(sum(walkers_cumul_adj_matrix)) < k * k)
+        while (sum(sum(sum(walkers_coverage_matrix))) < nb_vertices * k) 
 
             t = t + 1;
             if mod(t,1000) == 0
@@ -102,3 +103,6 @@ end
 %% Plots
 
 plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody);
+
+save('walkers_time_to_have_complete_vision.mat', 'walkers_time_to_have_complete_vision');
+save('walkers_time_to_meet_everybody.mat', 'walkers_time_to_meet_everybody');

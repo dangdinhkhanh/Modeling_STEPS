@@ -6,21 +6,18 @@ clear all
 alpha = 1.6;
 grid_size = 20;
 zone_size = 1;
-time_step = 1;
-rwp_speed = [3 6] / 3.6;
+time_step = 5;
+rwp_speed = [10 10];
 rwp_pause_time = [0 0];
-zone_speed = [3 6] / 3.6;
+zone_speed = [10 10];
 zone_time = [1 1];
 radio_range = 10;
-
-%nodes.move;
-%disp(floor(nodes.coords ./ simu.zone_size));
     
 nb_vertices = grid_size * grid_size;
 
 %% Simulator parameters initialisation
 
-total_nb_simulations = 20;
+total_nb_simulations = 30;
 max_nb_walkers = 20;
 walkers_time_to_have_complete_vision = cell(max_nb_walkers, total_nb_simulations);
 walkers_time_to_meet_everybody = cell(max_nb_walkers, total_nb_simulations);
@@ -66,8 +63,8 @@ for k=1:max_nb_walkers
 
         t = 0;
         % While the local vision is not complete for ALL walkers...
-        while (sum(sum(sum(walkers_coverage_matrix))) < nb_vertices * k) | (sum(sum(walkers_cumul_adj_matrix)) < k * k)
-
+        % | (sum(sum(walkers_cumul_adj_matrix)) < k * k)
+        while (sum(sum(sum(walkers_coverage_matrix))) < nb_vertices * k)
             t = t + 1;
             if mod(t,1000) == 0
                 fprintf('%d\t',t);
@@ -95,11 +92,11 @@ for k=1:max_nb_walkers
                 end
 
                 if (walkers_time_to_meet_everybody{k, num_simu}(n) == 0) & (sum(walkers_cumul_adj_matrix(n,:),2) == k)
-                    walkers_time_to_meet_everybody{k, num_simu}(n) = t;
+                    walkers_time_to_meet_everybody{k, num_simu}(n) = t/time_step;
                 end
 
                 if (walkers_time_to_have_complete_vision{k, num_simu}(n) == 0) & (sum(sum(walkers_coverage_matrix(:,:,n))) == nb_vertices)
-                    walkers_time_to_have_complete_vision{k, num_simu}(n) = t;
+                    walkers_time_to_have_complete_vision{k, num_simu}(n) = t/time_step;
                 end
 
             end
@@ -118,3 +115,5 @@ plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybod
 %% Save nodes attach position
 
 save('all_attach_zones_k.mat', 'all_attach_zones_k');
+save('walkers_time_to_have_complete_vision.mat', 'walkers_time_to_have_complete_vision');
+save('walkers_time_to_meet_everybody.mat', 'walkers_time_to_meet_everybody');
