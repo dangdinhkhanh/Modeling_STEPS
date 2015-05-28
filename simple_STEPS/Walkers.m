@@ -52,8 +52,8 @@ classdef Walkers < handle
             D(r==3,:) = [distance(r==3).*ones(size(distance(r==3))) floor(rand(size(distance(r==3)))*2.*distance(r==3))-distance(r==3)+1];
             D(r==4,:) = [floor(rand(size(distance(r==4)))*2.*distance(r==4))-distance(r==4)+1 -distance(r==4).*ones(size(distance(r==4)))];
 
-            new_coords(:,1) = self.attachment_zone(1) + D(:,1);
-            new_coords(:,2) = self.attachment_zone(2) + D(:,2);
+            new_coords(:,1) = self.attachment_zone(:,1) + D(:,1);
+            new_coords(:,2) = self.attachment_zone(:,2) + D(:,2);
 
             new_coords(new_coords < 0) = new_coords(new_coords < 0) + self.grid_size;
             new_coords(new_coords >= self.grid_size) = new_coords(new_coords >= self.grid_size) - self.grid_size;

@@ -36,11 +36,13 @@ classdef Group < handle
         d_max
         radio_range
         roaming
+        
+        ZA_mode
     end
     
     methods
         
-        function self = Group(alpha, node_config, grid_size, v_rwp, t_rwp, v_zone, t_zone, zone_size, time_step, radio_range)
+        function self = Group(alpha, node_config, grid_size, v_rwp, t_rwp, v_zone, t_zone, zone_size, time_step, radio_range,ZA_mode)
             self.v_rwp = v_rwp;
             self.t_rwp = t_rwp;
             self.v_zone = v_zone;
@@ -51,15 +53,23 @@ classdef Group < handle
             self.grid_size = grid_size;
             self.alpha = alpha;
             self.radio_range = radio_range;
+            self.ZA_mode = ZA_mode;
             
             stationary_nodes = sum(node_config(1:find(isnan(alpha))-1))+1:sum(node_config(1:find(isnan(alpha))));
-            % initialisation
-%             grid_init = 1:2:self.grid_size;
-%             self.grid_coords = [randsample(grid_init,self.number_of_nodes,1)' randsample(grid_init,self.number_of_nodes,1)']; % equi-distanced zones
+
             self.grid_coords = randi(self.grid_size,self.number_of_nodes,2)-1; % uniformly
             
-            middle_zone = [floor(grid_size/2) floor(grid_size/2)];
-            self.attachment_zone = self.grid_coords;
+            % Attachement zone settings
+            % 0 : Single attach zone for all nodes
+            % 1 : Many attach zones
+            if ZA_mode == 0
+                % Indexes start at 0...
+                middle_zone = [floor(grid_size/2) floor(grid_size/2)];
+                self.attachment_zone = repmat(middle_zone,k,1);
+            else
+                % The walkers' zones attach are chose uniformly
+                self.attachment_zone = self.grid_coords;
+            end
             
             self.coords = self.grid_coords*self.zone_size + self.zone_size * rand(self.number_of_nodes,2);
             self.next_waypoint = self.grid_coords*self.zone_size + self.zone_size * rand(self.number_of_nodes,2);

@@ -8,9 +8,10 @@ grid_size = 20;
 nb_vertices = grid_size * grid_size;
 alpha = 1.6;
 
-% A same attachment zone for all nodes
-% Indexes start at 0...
-attachment_zone = [floor(grid_size/2) floor(grid_size/2)];
+% Attachement zone settings
+% 0 : Single attach zone for all nodes
+% 1 : Many attach zones
+ZA_mode = 1;
 
 %% Simulator parameters initialisation
 
@@ -19,19 +20,31 @@ max_nb_walkers = 20;
 walkers_time_to_have_complete_vision = cell(max_nb_walkers, total_nb_simulations);
 walkers_time_to_meet_everybody = cell(max_nb_walkers, total_nb_simulations);
 
+% Attach zones storage
+all_attach_zones_k = cell(max_nb_walkers,1);
+
 for k=1:max_nb_walkers
     fprintf('**************** %d walker(s) ****************\n', k);
     
+    if ZA_mode == 0
+        % Indexes start at 0...
+        attachment_zone = [floor(grid_size/2) floor(grid_size/2)];
+        all_attach_zones_k{k,1} = repmat(attachment_zone,k,1);
+    else
+        % The walkers' zones attach are chose uniformly
+        all_attach_zones_k{k,1} = randi(grid_size,k,2)-1;
+    end
+    
+    % Walkers creation
+	walkers = Walkers(k, grid_size, alpha, all_attach_zones_k{k,1});
 
     %% Simulation start
 
     for num_simu=1:total_nb_simulations
         fprintf('Simu %d\n', num_simu);
 
-        % Walkers creation
-        walkers = Walkers(k, grid_size, alpha, attachment_zone);
         % The walkers' positions are chose uniformly for t = 0
-        walkers_positions = walkers.walkers_positions;
+        walkers_positions = all_attach_zones_k{k,1};
 
         % A global coverage matrix representing the global vision
         % i.e. all vertices visited by at least one walker
@@ -104,5 +117,6 @@ end
 
 plot_results(walkers_time_to_have_complete_vision, walkers_time_to_meet_everybody);
 
+save('all_attach_zones_k.mat', 'all_attach_zones_k');
 save('walkers_time_to_have_complete_vision.mat', 'walkers_time_to_have_complete_vision');
 save('walkers_time_to_meet_everybody.mat', 'walkers_time_to_meet_everybody');

@@ -15,6 +15,11 @@ radio_range = 10;
     
 nb_vertices = grid_size * grid_size;
 
+% Attachement zone settings
+% 0 : Single attach zone for all nodes
+% 1 : Many attach zones
+ZA_mode = 0;
+
 %% Simulator parameters initialisation
 
 total_nb_simulations = 30;
@@ -29,10 +34,10 @@ for k=1:max_nb_walkers
     fprintf('**************** %d walker(s) ****************\n', k);
     
     % Walkers creation
-    walkers = Group(alpha,k,grid_size,rwp_speed,rwp_pause_time,zone_speed,zone_time,zone_size,time_step,radio_range);
+    walkers = Group(alpha,k,grid_size,rwp_speed,rwp_pause_time,zone_speed,zone_time,zone_size,time_step,radio_range,ZA_mode);
 	% The walkers' positions are chose uniformly for t = 0
 	walkers_positions = floor(walkers.coords ./ zone_size);
-    all_attach_zones_k{k,1} = walkers_positions;
+    all_attach_zones_k{k,1} = walkers.attachment_zone;
 
     %% Simulation start
 
